@@ -1,0 +1,16 @@
+{
+    "name": "vaneves/apirus",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Van Neves",
+            "email": "vaneves@vaneves.com"
+        }
+    ],
+    "require": {
+        "erusev/parsedown": "^1.7",
+        "symfony/yaml": "^5.0",
+        "league/climate": "^3.5"
+    }
+}

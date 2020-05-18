@@ -4,11 +4,36 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/style.css">
     <title>Apirus - Example</title>
     <style type="text/css">
       .navbar {
         z-index: 2;
+      }
+      .method {
+        display: inline-block;
+        padding: 5px;
+        color: #fff;
+        background: #999;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1;
+        margin-right: 10px;
+      }
+      .method-get {
+        background: #28a745;
+      }
+      .method-post {
+        background: #ffc107;
+      }
+      .method-put {
+        background: #007bff;
+      }
+      .method-patch {
+        background: #6c757d;
+      }
+      .method-delete {
+        background: #dc3545;
       }
       .sidebar {
         position: fixed;
@@ -39,10 +64,11 @@
       .sidebar .nav-link:hover {
         background: rgba(0,0,0,.05);
       }
-      .sidebar .nav-link .badge {
+      .sidebar .nav-link .method {
         width: 32px;
         font-size: 8px;
         line-height: 1;
+        padding: 3px;
       }
       .main {
         padding-left: 250px;
@@ -50,7 +76,13 @@
       }
       .section-header {
         padding: 20px;
+        border-top: 1px solid #eee;
         border-right: 1px solid #eee;
+      }
+      .section-header h2 {
+        font-size: 1.7rem;
+        margin-top: 40px;
+        margin-bottom: 10px;
       }
       .section-http .section-url {
         border-top: 1px solid #eee;
@@ -96,6 +128,17 @@
       }
       .section-http .tab-pane pre {
         color: #ddd;
+      }
+      .response-code {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #dc3545;
+        border-radius: 50%;
+        margin-right: 3px;
+      }
+      .response-code.response-code-200 {
+        background: #28a745;
       }
       @media (max-width: 991px) {
         .sidebar {
@@ -148,7 +191,7 @@
           <li class="nav-item">
             <a class="nav-link active" href="#<?= $subitem['slug'] ?>">
               <?php if ($subitem['method']): ?>
-              <span class="badge badge-warning"><?= $subitem['method'] ?></span>
+              <span class="method method-<?= strtolower($subitem['method']) ?>"><?= $subitem['method'] ?></span>
               <?php endif ?>
               <?= $subitem['title'] ?>
             </a>
@@ -177,7 +220,7 @@
             <!-- request method and url -->
             <?php if (isset($section['meta']['method']) && isset($section['meta']['url'])): ?>
             <div class="section-url">
-              <span class="badge badge-primary mr-2"><?= $section['meta']['method'] ?></span>
+              <span class="method method-<?= strtolower($section['meta']['method']) ?>"><?= $section['meta']['method'] ?></span>
               <?= $section['meta']['url'] ?>
             </div>
             <?php endif ?>
@@ -207,6 +250,7 @@
                   <?php foreach ($section['responses'] as $response): ?>
                   <li class="nav-item" role="presentation">
                     <a class="nav-link <?= $response['first'] ? 'active' : '' ?>" data-toggle="pill" href="#<?= $response['hash'] ?>">
+                      <span class="response-code response-code-<?= strtolower($response['code']) ?>"></span>
                       <?= $response['code'] ?>
                     </a>
                   </li>

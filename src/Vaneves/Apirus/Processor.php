@@ -15,6 +15,8 @@ class Processor
     
     protected $pathTheme;
 
+    protected $highlightTheme;
+
     protected $menu = [];
 
     protected $items = [];
@@ -54,6 +56,11 @@ class Processor
                 'description'  => 'Theme name',
                 'defaultValue' => 'default',
             ],
+            'highlight' => [
+                'prefix'       => 'h',
+                'description'  => 'Highlight style',
+                'defaultValue' => 'dark',
+            ],
         ]);
         $this->console->arguments->parse();
 
@@ -67,10 +74,12 @@ class Processor
         $src = $this->console->arguments->get('src');
         $dist = $this->console->arguments->get('dist');
         $theme = $this->console->arguments->get('theme');
+        $highlight = $this->console->arguments->get('highlight');
 
         $this->pathSrc = './' . rtrim($src, '/') . '/';
         $this->pathDist = './' . rtrim($dist, '/') . '/';
         $this->pathTheme = './themes/' . rtrim($theme, '/') . '/layout.php';
+        $this->highlightTheme = $highlight;
     }
 
     public function build()
@@ -187,7 +196,8 @@ class Processor
         foreach ($requests as $lang => $text) {
             $language = strtolower($lang);
             try {
-                $highlighted = $highlighter->highlight($language, $text);
+                $l = $language == 'curl' ? 'bash' : $language;
+                $highlighted = $highlighter->highlight($l, $text);
 
                 $body = "<pre><code class=\"hljs {$highlighted->language}\">";
                 $body .=  $highlighted->value;
@@ -268,7 +278,7 @@ class Processor
         $menu = $this->menu;
         $items = $this->items;
 
-        $highlight_css = \HighlightUtilities\getStyleSheet('dark');
+        $highlight_css = \HighlightUtilities\getStyleSheet($this->highlightTheme);
 
         ob_start();
 

@@ -11,6 +11,7 @@
     "require": {
         "erusev/parsedown": "^1.7",
         "symfony/yaml": "^5.0",
-        "league/climate": "^3.5"
+        "league/climate": "^3.5",
+        "scrivo/highlight.php": "v9.18.1.1"
     }
 }

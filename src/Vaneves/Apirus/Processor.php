@@ -4,6 +4,7 @@ namespace Vaneves\Apirus;
 
 use \Parsedown;
 use \FilesystemIterator;
+use \Highlight\Highlighter;
 use \League\CLImate\CLImate;
 
 class Processor
@@ -179,15 +180,28 @@ class Processor
     protected function reprocessRequests($requests)
     {
         $parsedown = new Parsedown();
+        $highlighter = new Highlighter();
 
         $result = [];
         $first = true;
         foreach ($requests as $lang => $text) {
-            $markdown = "```{$lang}\n{$text}\n```";
-            $body = $parsedown->text($markdown);
+            $language = strtolower($lang);
+            try {
+                $highlighted = $highlighter->highlight($language, $text);
+
+                $body = "<pre><code class=\"hljs {$highlighted->language}\">";
+                $body .=  $highlighted->value;
+                $body .=  "</code></pre>";
+            } catch (\Exception $e) {
+                $markdown = "```{$language}\n{$text}\n```";
+                $body = $parsedown->text($markdown);
+
+                $this->console->comment("Highlight to lang {$language} not found");
+            }
+            
             array_push($result, [
                 'first' => $first,
-                'hash' => 'request-' . $lang .'-'. md5(uniqid(rand(0, 99999), true)),
+                'hash' => 'request-' . $language .'-'. md5(uniqid(rand(0, 99999), true)),
                 'lang' => $lang,
                 'body' => $body,
             ]);
@@ -253,6 +267,9 @@ class Processor
         
         $menu = $this->menu;
         $items = $this->items;
+
+        $highlight_css = \HighlightUtilities\getStyleSheet('dark');
+
         ob_start();
 
         include $this->pathTheme;

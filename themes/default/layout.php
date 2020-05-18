@@ -123,11 +123,14 @@
       .section-http .section-response .nav .nav-link.active {
         background: #282828;
       }
-      .section-http .tab-pane {
-        padding: 20px;
-      }
       .section-http .tab-pane pre {
         color: #ddd;
+        margin: 0;
+      }
+      .section-http .tab-pane pre code {
+        padding: 20px;
+        display: block;
+        overflow-x: auto;
       }
       .response-code {
         display: inline-block;
@@ -156,6 +159,9 @@
           padding-left: 0;
         }
       }
+    </style>
+    <style type="text/css">
+      <?= $highlight_css ?>
     </style>
   </head>
   <body>

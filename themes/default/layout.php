@@ -21,16 +21,16 @@
         margin-right: 10px;
       }
       .method-get {
-        background: #28a745;
+        background: #2e8b57;
       }
       .method-post {
-        background: #ffc107;
+        background: #daa520;
       }
       .method-put {
         background: #007bff;
       }
       .method-patch {
-        background: #6c757d;
+        background: #6959cd;
       }
       .method-delete {
         background: #dc3545;

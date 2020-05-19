@@ -6,6 +6,7 @@ use \Parsedown;
 use \FilesystemIterator;
 use \Highlight\Highlighter;
 use \League\CLImate\CLImate;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Processor
 {
@@ -31,6 +32,15 @@ class Processor
         $this->console = new CLImate();
 
         $this->arguments();
+
+        $file_env = realpath(__DIR__ . '/../../../.env');
+        if (!file_exists($file_env)) {
+            $this->console->error("File .env not found");
+            exit;
+        }
+
+        $dotenv = new Dotenv();
+        $dotenv->load($file_env);
     }
 
     protected function arguments()

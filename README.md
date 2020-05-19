@@ -1,4 +1,6 @@
-# Apirus
+# Apirus - Doc Generator
+
+![Apirus](https://user-images.githubusercontent.com/146581/82272220-50305680-9950-11ea-92d5-38cbe914d98f.png)
 
 PHP application to create beautiful rest API documentation using markdown. Inspired by [readme.com](https://readme.com/).
 

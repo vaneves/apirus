@@ -105,7 +105,7 @@ class Processor
         $iterator = new FilesystemIterator($this->pathSrc);
         $structure = [];
         foreach($iterator as $folder) {
-            if ($folder->isDir()) {
+            if ($folder->isDir() && !preg_match('/^\./', $folder->getFilename())) {
                 $folder_path = rtrim($this->pathSrc . $folder->getFilename(), '/') . '/';
 
                 if (!$folder->isReadable()) {

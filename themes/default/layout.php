@@ -123,6 +123,13 @@
       .section-http .section-response .nav .nav-link.active {
         background: #282828;
       }
+      pre code {
+        padding: 20px;
+        display: block;
+        overflow: auto;
+        background: #eee;
+        border-radius: 6px;
+      }
       .section-http .tab-pane pre {
         color: #ddd;
         margin: 0;
@@ -130,7 +137,9 @@
       .section-http .tab-pane pre code {
         padding: 20px;
         display: block;
-        overflow-x: auto;
+        overflow: auto;
+        background: none;
+        border-radius: 0;
       }
       .response-code {
         display: inline-block;
@@ -142,6 +151,10 @@
       }
       .response-code.response-code-200 {
         background: #28a745;
+      }
+      blockquote {
+        padding: 1rem;
+        border-left: 1rem solid #eee;
       }
       @media (max-width: 991px) {
         .sidebar {

@@ -1,3 +1,4 @@
 vendor/
-public/index.html
+public/
+!public/.gitignore
 .env

@@ -3,7 +3,7 @@
 if (! function_exists('env')) {
     function env($name, $default = null)
     {
-        if (isset($_ENV[$name])) {
+        if (isset($_ENV[$name]) && $_ENV[$name]) {
             return $_ENV[$name];
         }
         return $default;

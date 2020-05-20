@@ -18,6 +18,12 @@ After downloading, go to the application directory and install the dependencies:
 composer install
 ```
 
+Copy the `.env.example` file as` .env`.
+
+```
+cp .env.example .env
+```
+
 ## Building
 
 To compile the HTML output, just run the following command:
@@ -26,23 +32,48 @@ To compile the HTML output, just run the following command:
 php apirus
 ```
 
+### .env Configuration
+
+You can configure settings to compile the API, to do so just edit the `.env` file and change the value of the variables.
+
+```
+API_URL=http://example.com/api
+
+SOURCE=
+DIST=
+THEME=
+HIGHTLIGHT=
+```
+
+| Variable   | Description             | Default          |
+|------------|-------------------------|------------------|
+| API_URL    | Base URL of requests    |                  |
+| SOURCE     | Path the markdown files | ./docs           |
+| DIST       | Destination folder      | ./public         |
+| THEME      | Theme name              | ./themes/default |
+| HIGHTLIGHT | Highlight style         | dark             |
+
+The `API_URL` variable is used to not repeat the complete URL of the request in all markdown files.
+
 ### Optional Arguments
 
 You can enter arguments for changing the build. The accepted arguments are:
 
-| Argument  | Short | Description              | Default |
-|-----------|-------|--------------------------|---------|
-| help      |       | Prints a usage statement |         |
-| src       | s     | Path the markdown files  | docs    |
-| dist      | d     | Destination folder       | public  |
-| theme     | t     | Theme name               | default |
-| highlight | h     | Highlight style          | dark    |
+| Argument  | Short | Description              | Default      |
+|-----------|-------|--------------------------|--------------|
+| help      |       | Prints a usage statement |              |
+| src       | s     | Path the markdown files  | `SOURCE`     |
+| dist      | d     | Destination folder       | `DIST`       |
+| theme     | t     | Theme name               | `THEME`      |
+| highlight | h     | Highlight style          | `HIGHTLIGHT` |
 
 Example:
 
 ```
 php apirus --src my-docs --theme mytheme -h monokai
 ```
+
+**If an argument is defined when compiling, it will overwrite the values defined in `.env`.**
 
 ## Creating Documentation
 

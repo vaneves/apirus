@@ -240,7 +240,7 @@
             <?php if (isset($section['meta']['method']) && isset($section['meta']['url'])): ?>
             <div class="section-url">
               <span class="method method-<?= strtolower($section['meta']['method']) ?>"><?= $section['meta']['method'] ?></span>
-              <?= $section['meta']['url'] ?>
+              <?= env('API_URL') . $section['meta']['url'] ?>
             </div>
             <?php endif ?>
 

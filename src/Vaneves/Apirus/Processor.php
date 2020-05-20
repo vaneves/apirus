@@ -31,8 +31,6 @@ class Processor
         $this->parser = new Markdown();
         $this->console = new CLImate();
 
-        $this->arguments();
-
         $file_env = realpath(__DIR__ . '/../../../.env');
         if (!file_exists($file_env)) {
             $this->console->error("File .env not found");
@@ -41,6 +39,8 @@ class Processor
 
         $dotenv = new Dotenv();
         $dotenv->load($file_env);
+
+        $this->arguments();
     }
 
     protected function arguments()
@@ -54,22 +54,22 @@ class Processor
             'src' => [
                 'prefix'       => 's',
                 'description'  => 'Path the markdown files',
-                'defaultValue' => 'docs',
+                'defaultValue' => env('SOURCE', 'docs'),
             ],
             'dist' => [
                 'prefix'       => 'd',
                 'description'  => 'Destination folder',
-                'defaultValue' => 'public',
+                'defaultValue' => env('DIST', 'public'),
             ],
             'theme' => [
                 'prefix'       => 't',
                 'description'  => 'Theme name',
-                'defaultValue' => 'default',
+                'defaultValue' => env('THEME', 'themes/default'),
             ],
             'highlight' => [
                 'prefix'       => 'h',
                 'description'  => 'Highlight style',
-                'defaultValue' => 'dark',
+                'defaultValue' => env('HIGHTLIGHT', 'dark'),
             ],
         ]);
         $this->console->arguments->parse();
@@ -86,9 +86,9 @@ class Processor
         $theme = $this->console->arguments->get('theme');
         $highlight = $this->console->arguments->get('highlight');
 
-        $this->pathSrc = './' . rtrim($src, '/') . '/';
-        $this->pathDist = './' . rtrim($dist, '/') . '/';
-        $this->pathTheme = './themes/' . rtrim($theme, '/') . '/layout.php';
+        $this->pathSrc = rtrim(realpath($src), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->pathDist = rtrim(realpath($dist), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->pathTheme = rtrim(realpath($theme), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'layout.php';
         $this->highlightTheme = $highlight;
     }
 
@@ -106,7 +106,7 @@ class Processor
         $structure = [];
         foreach($iterator as $folder) {
             if ($folder->isDir() && !preg_match('/^\./', $folder->getFilename())) {
-                $folder_path = rtrim($this->pathSrc . $folder->getFilename(), '/') . '/';
+                $folder_path = rtrim(realpath($this->pathSrc . $folder->getFilename()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
                 if (!$folder->isReadable()) {
                     $this->console->error("Directory {$folder_path} not is readable");

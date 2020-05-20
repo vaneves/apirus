@@ -11,10 +11,13 @@ class Markdown
         'meta' => '/^(---(?s)(.*?)---)/i',
         'request' => '/(```request(\:([\w]+))(?s)(.*?)```)/i',
         'response' => '/(```response(\:([\d]{3}))(?s)(.*?)```)/i',
+        'variable' => '/({{\s?([A-Z_]+)\s?}})/',
     ];
 
     public function parse($markdown)
     {
+        $markdown = $this->variable($markdown);
+
         $md = $this->removeMeta($markdown);
         $md = $this->removeRequests($md);
         $md = $this->removeResponses($md);
@@ -29,6 +32,17 @@ class Markdown
         return new Section($meta, $content, $requests, $responses);
     }
     
+    protected function variable($text)
+    {
+        $text = preg_replace_callback($this->regex['variable'], function ($matches) {
+            if (isset($matches[2])) {
+                return env($matches[2]);
+            }
+            return $matches[1];
+        }, $text);
+        return $text;
+    }
+
     protected function meta($text) 
     {
         preg_match($this->regex['meta'], $text, $matches);

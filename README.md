@@ -53,7 +53,18 @@ HIGHTLIGHT=
 | THEME      | Theme name              | ./themes/default |
 | HIGHTLIGHT | Highlight style         | dark             |
 
-The `API_URL` variable is used to not repeat the complete URL of the request in all markdown files.
+The `API_URL` variable is used to not repeat the complete URL of the request in all markdown files. You can use it `{{API_URL}}`, for example:
+
+````
+---
+url: "`{{API_URL}}/api/items"
+---
+
+```request:cURL
+curl --location --request GET '`{{API_URL}}/api/items' \
+--header 'Content-Type: application/json' 
+```
+````
 
 ### Optional Arguments
 

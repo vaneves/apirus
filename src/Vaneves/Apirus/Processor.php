@@ -144,9 +144,15 @@ class Processor
             }
         }
 
+        usort($structure, 'sort_by_name');
+
         foreach ($structure as $folder) {
             $submenu = [];
-            foreach ($folder['files'] as $file) {
+
+            $files = $folder['files'];
+            usort($files, 'sort_by_name');
+
+            foreach ($files as $file) {
                 $item = $this->processFile($file);
                 $method = isset($item['meta']['method']) ? strtoupper($item['meta']['method']) : null;
 

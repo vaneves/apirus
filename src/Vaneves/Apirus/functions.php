@@ -9,3 +9,10 @@ if (! function_exists('env')) {
         return $default;
     }
 }
+
+if (! function_exists('sort_by_name')) {
+    function sort_by_name($a, $b)
+    {
+        return strtolower($a['name']) > strtolower($b['name']);
+    }
+}

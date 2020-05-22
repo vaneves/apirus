@@ -74,7 +74,8 @@
         padding-left: 250px;
         margin-top: 56px;
       }
-      .section-header {
+      .section-header,
+      .section-params {
         padding: 20px;
         border-top: 1px solid #eee;
         border-right: 1px solid #eee;
@@ -83,6 +84,14 @@
         font-size: 1.7rem;
         margin-top: 40px;
         margin-bottom: 10px;
+      }
+      .section-params h3 {
+        font-size: 1.4rem;
+        font-weight: normal;
+        color: #666;
+      }
+      .section-params .table {
+        margin-bottom: 0;
       }
       .section-http .section-url {
         border-top: 1px solid #eee;
@@ -286,6 +295,15 @@
               </div>
             </div>
           </div>
+          <!-- params -->
+          <?php foreach ($section['params'] as $param): ?>
+          <div class="row">
+            <div class="col-lg-8 col-md-6 section-params">
+              <h3><?= $param['type'] ?> Params</h3>
+              <?= $param['table'] ?>
+            </div>
+          </div>
+          <?php endforeach ?>
         </section>
         <?php endforeach ?>
       </div>

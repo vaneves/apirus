@@ -180,9 +180,11 @@ class Processor
 
         $meta = $section->meta();
         $content = $section->content();
+        $params = $section->params();
         $requests = $section->requests();
         $responses = $section->responses();
 
+        $params = $this->reprocessParams($params);
         $requests = $this->reprocessRequests($requests);
         $responses = $this->reprocessResponses($responses);
 
@@ -197,9 +199,25 @@ class Processor
             'slug' => $slug,
             'meta' => $meta,
             'content' => $content,
+            'params' => $params,
             'requests' => $requests,
             'responses' => $responses,
         ];
+    }
+
+    protected function reprocessParams($params)
+    {
+        $parsedown = new Parsedown();
+
+        $result = [];
+        foreach ($params as $type => $text) {
+            $table = $parsedown->text($text);
+            array_push($result, [
+                'type' => ucfirst($type),
+                'table' => $table,
+            ]);
+        }
+        return $result;
     }
 
     protected function reprocessRequests($requests)

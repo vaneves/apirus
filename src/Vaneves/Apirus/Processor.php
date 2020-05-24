@@ -148,6 +148,9 @@ class Processor
 
         usort($structure, 'sort_by_name');
 
+        $this->menu = [];
+        $this->items = [];
+
         foreach ($structure as $folder) {
             $this->console->whisper("Processing folder {$folder['path']}");
             $submenu = [];

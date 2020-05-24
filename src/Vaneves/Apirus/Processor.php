@@ -3,7 +3,6 @@
 namespace Vaneves\Apirus;
 
 use \Parsedown;
-use \FilesystemIterator;
 use \Highlight\Highlighter;
 use \League\CLImate\CLImate;
 use Symfony\Component\Dotenv\Dotenv;
@@ -18,6 +17,8 @@ class Processor
 
     protected $highlightTheme;
 
+    protected $watch = false;
+
     protected $menu = [];
 
     protected $items = [];
@@ -25,6 +26,8 @@ class Processor
     protected $parser = null;
 
     protected $console = null;
+
+    protected $filesytem = null;
 
     public function __construct()
     {
@@ -41,6 +44,8 @@ class Processor
         $dotenv->load($file_env);
 
         $this->arguments();
+
+        $this->filesytem = new Filesystem($this->pathSrc);
     }
 
     protected function arguments()
@@ -51,23 +56,32 @@ class Processor
                 'description' => 'Prints a usage statement',
                 'noValue'     => true,
             ],
+            'watch' => [
+                'longPrefix'  => 'watch',
+                'description' => 'Watching files changes',
+                'noValue'     => true,
+            ],
             'src' => [
                 'prefix'       => 's',
+                'longPrefix'   => 'src',
                 'description'  => 'Path the markdown files',
                 'defaultValue' => env('SOURCE', 'docs'),
             ],
             'dist' => [
                 'prefix'       => 'd',
+                'longPrefix'   => 'dist',
                 'description'  => 'Destination folder',
                 'defaultValue' => env('DIST', 'public'),
             ],
             'theme' => [
                 'prefix'       => 't',
+                'longPrefix'   => 'theme',
                 'description'  => 'Theme name',
                 'defaultValue' => env('THEME', 'themes/default'),
             ],
             'highlight' => [
                 'prefix'       => 'h',
+                'longPrefix'   => 'highlight',
                 'description'  => 'Highlight style',
                 'defaultValue' => env('HIGHTLIGHT', 'dark'),
             ],
@@ -75,10 +89,14 @@ class Processor
         $this->console->arguments->parse();
 
         $help = $this->console->arguments->get('help');
-
         if ($help) {
             $this->console->usage();
             exit;
+        }
+
+        $watch = $this->console->arguments->get('watch');
+        if ($watch) {
+            $this->watch = true;
         }
 
         $src = $this->console->arguments->get('src');
@@ -86,67 +104,52 @@ class Processor
         $theme = $this->console->arguments->get('theme');
         $highlight = $this->console->arguments->get('highlight');
 
-        $this->pathSrc = rtrim(realpath($src), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->pathDist = rtrim(realpath($dist), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->pathTheme = rtrim(realpath($theme), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'layout.php';
+        $real_src = realpath($src);
+        $real_dist = realpath($dist);
+        $real_theme = realpath($theme);
+
+        if ($real_src === false) {
+            $this->console->error("Directory {$src} not found");
+            exit;
+        }
+        if ($real_dist === false) {
+            $this->console->error("Directory {$dist} not found");
+            exit;
+        }
+        if ($real_theme === false) {
+            $this->console->error("Directory {$theme} not found");
+            exit;
+        }
+
+        $this->pathSrc = rtrim($real_src, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->pathDist = rtrim($real_dist, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->pathTheme = rtrim($real_theme, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'layout.php';
         $this->highlightTheme = $highlight;
+    }
+
+    public function run()
+    {
+        $this->console->comment('Building...');
+        $this->build();
+        if ($this->watch) {
+            $this->watch();
+        }
     }
 
     public function build()
     {
-        $this->console->whisper('Building...');
-
         if (!is_dir($this->pathSrc)) {
             $this->console->error("Directory {$this->pathSrc} not found");
             exit;
         }
 
         $this->console->whisper("Reading {$this->pathSrc}");
-        $iterator = new FilesystemIterator($this->pathSrc);
-        $structure = [];
-        foreach($iterator as $folder) {
-            if ($folder->isDir() && !preg_match('/^\./', $folder->getFilename())) {
-                $folder_path = rtrim(realpath($this->pathSrc . $folder->getFilename()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-                if (!$folder->isReadable()) {
-                    $this->console->error("Directory {$folder_path} not is readable");
-                    exit;
-                }
-
-                $item = [
-                    'name' => $folder->getFilename(),
-                    'path' => $folder_path,
-                ];
-
-                $this->console->whisper("Reading {$folder_path}");
-
-                $subiterator = new FilesystemIterator($item['path']);
-                $files = [];
-                foreach($subiterator as $file) {
-                    if ($file->isFile()) {
-                        $file_path = $item['path'] . $file->getFilename();
-
-                        if (!$file->isReadable()) {
-                            $this->console->error("File {$file_path} not is readable");
-                            exit;
-                        }
-
-                        $this->console->whisper("Reading file {$file_path}");
-
-                        array_push($files, [
-                            'name' => $file->getFilename(),
-                            'path' => $item['path'] . $file->getFilename(),
-                        ]);
-                    }
-                }
-                $item['files'] = $files;
-                array_push($structure, $item);
-            }
-        }
+        $structure = $this->filesytem->getStructure();
 
         usort($structure, 'sort_by_name');
 
         foreach ($structure as $folder) {
+            $this->console->whisper("Processing folder {$folder['path']}");
             $submenu = [];
 
             $files = $folder['files'];
@@ -169,6 +172,19 @@ class Processor
             ]);
         }
         $this->buildHtml();
+
+        if ($this->watch) {
+            $this->console->whisper("Watching files for changes...");
+        }
+    }
+
+    protected function watch()
+    {
+        $watcher = new Watcher($this->pathSrc);
+        $watcher->onChange(function () {
+            $this->console->comment('Rebuilding...');
+            $this->build();
+        });
     }
 
     protected function processFile($file)
@@ -327,15 +343,15 @@ class Processor
             exit;
         }
 
-        $this->pathDist .= 'index.html';
+        $dist = $this->pathDist . 'index.html';
 
-        $this->console->whisper("Writing output {$this->pathDist}");
+        $this->console->whisper("Writing output {$dist}");
 
-        $ok = file_put_contents($this->pathDist, $html);
+        $ok = file_put_contents($dist, $html);
         if ($ok) {
             $this->console->info("Build successful");
         } else {
-            $this->console->error("Error on write file {$this->pathDist}");
+            $this->console->error("Error on write file {$dist}");
         }
     }
 }

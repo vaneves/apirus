@@ -5,9 +5,11 @@ require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/Vaneves/Apirus/functions.php';
 require __DIR__.'/src/Vaneves/Apirus/Section.php';
 require __DIR__.'/src/Vaneves/Apirus/Markdown.php';
+require __DIR__.'/src/Vaneves/Apirus/Filesystem.php';
+require __DIR__.'/src/Vaneves/Apirus/Watcher.php';
 require __DIR__.'/src/Vaneves/Apirus/Processor.php';
 
 use Vaneves\Apirus\Processor;
 
 $processor = new Processor();
-$processor->build();
+$processor->run();

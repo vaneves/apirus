@@ -6,19 +6,13 @@ PHP application to create beautiful rest API documentation using markdown. Inspi
 
 ## Installation
 
-To install, download the repository:
+To install, run the command:
 
 ```
-git clone https://github.com/vaneves/apirus.git
+composer create-project --prefer-dist vaneves/apirus
 ```
 
-After downloading, go to the application directory and install the dependencies:
-
-```
-composer install
-```
-
-Copy the `.env.example` file as` .env`.
+After downloading, go to the application directory and copy the `.env.example` file as `.env`.
 
 ```
 cp .env.example .env
@@ -198,16 +192,20 @@ Any information other than the meta, requisition block or return block, will be 
 
 You can create blocks with parameters. This block is free, that is, you can put anything inside it that will be processed as a markdown. But I suggest that you put a table. You can define the columns as you wish.
 
+````
 ```param:path
 | Name    | Type    | Description   |
 |---------|---------|---------------|
 | id      | `int`   | ID            |
 ```
+````
 
+````
 ```param:body
 | Name     | Type     | Description          |
 |----------|----------|----------------------|
 | name     | `string` | First and last name  |
 ```
+````
 
 You can use the [Table Generator](https://www.tablesgenerator.com/markdown_tables) to create tables easily.

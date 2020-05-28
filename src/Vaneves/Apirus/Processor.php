@@ -6,6 +6,7 @@ use \Parsedown;
 use \Highlight\Highlighter;
 use \League\CLImate\CLImate;
 use Symfony\Component\Dotenv\Dotenv;
+use \Symfony\Component\Yaml\Yaml;
 
 class Processor
 {
@@ -231,10 +232,10 @@ class Processor
 
         $result = [];
         foreach ($params as $type => $text) {
-            $table = $parsedown->text($text);
+            $yaml = Yaml::parse(trim($text));
             array_push($result, [
                 'type' => ucfirst($type),
-                'table' => $table,
+                'params' => $yaml,
             ]);
         }
         return $result;

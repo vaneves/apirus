@@ -300,7 +300,26 @@
           <div class="row">
             <div class="col-lg-8 col-md-6 section-params">
               <h3><?= $param['type'] ?> Params</h3>
-              <?= $param['table'] ?>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Parâmetro</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($param['params'] as $field): ?>
+                  <tr>
+                    <td><?= $field['name'] ?></td>
+                    <td>
+                      <code><?= $field['type'] ?></code>
+                    </td>
+                    <td><?= $field['description'] ?></td>
+                  </tr>
+                  <?php endforeach ?>
+                </tbody>
+              </table>
             </div>
           </div>
           <?php endforeach ?>

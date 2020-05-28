@@ -187,25 +187,3 @@ Each block will be a tab with a response example. You can place a response block
 ### Description
 
 Any information other than the meta, requisition block or return block, will be part of the section description. You can use any markdown markup as per the [Parsedown](https://github.com/erusev/parsedown) library.
-
-### Params
-
-You can create blocks with parameters. This block is free, that is, you can put anything inside it that will be processed as a markdown. But I suggest that you put a table. You can define the columns as you wish.
-
-````
-```param:path
-| Name    | Type    | Description   |
-|---------|---------|---------------|
-| id      | `int`   | ID            |
-```
-````
-
-````
-```param:body
-| Name     | Type     | Description          |
-|----------|----------|----------------------|
-| name     | `string` | First and last name  |
-```
-````
-
-You can use the [Table Generator](https://www.tablesgenerator.com/markdown_tables) to create tables easily.

@@ -280,6 +280,9 @@
                     <a class="nav-link <?= $response['first'] ? 'active' : '' ?>" data-toggle="pill" href="#<?= $response['hash'] ?>">
                       <span class="response-code response-code-<?= strtolower($response['code']) ?>"></span>
                       <?= $response['code'] ?>
+                      <?php if ($response['lang']): ?>
+                        (<?= $response['lang'] ?>)
+                      <?php endif ?>
                     </a>
                   </li>
                   <?php endforeach ?>

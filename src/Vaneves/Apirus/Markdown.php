@@ -11,7 +11,7 @@ class Markdown
         'meta' => '/^(---(?s)(.*?)---)/i',
         'param' => '/(```param(\:([\w]+))(?s)(.*?)```)/i',
         'request' => '/(```request(\:([\w]+))(?s)(.*?)```)/i',
-        'response' => '/(```response(\:([\d]{3}))(?s)(.*?)```)/i',
+        'response' => '/(```response(\:([\d]{3}))(\(([a-zA-Z]+)\))?(?s)(.*?)```)/i',
         'variable' => '/({{\s?([A-Z_]+)\s?}})/',
     ];
 
@@ -55,7 +55,7 @@ class Markdown
     protected function meta($text) 
     {
         preg_match($this->regex['meta'], $text, $matches);
-        if(isset($matches[2])) {
+        if (isset($matches[2])) {
             return Yaml::parse(trim($matches[2]));
         }
         return [];
@@ -64,9 +64,10 @@ class Markdown
     protected function params($text) 
     {
         preg_match_all($this->regex['param'], $text, $matches);
-        if(isset($matches[3]) && isset($matches[4])) {
-            if (count($matches[3]) == count($matches[4]))
-            return array_combine($matches[3], $matches[4]);
+        if (isset($matches[3]) && isset($matches[4])) {
+            if (count($matches[3]) == count($matches[4])) {
+                return array_combine($matches[3], $matches[4]);
+            }
         }
         return [];
     }
@@ -74,9 +75,10 @@ class Markdown
     protected function requests($text) 
     {
         preg_match_all($this->regex['request'], $text, $matches);
-        if(isset($matches[3]) && isset($matches[4])) {
-            if (count($matches[3]) == count($matches[4]))
-            return array_combine($matches[3], $matches[4]);
+        if (isset($matches[3]) && isset($matches[4])) {
+            if (count($matches[3]) == count($matches[4])) {
+                return array_combine($matches[3], $matches[4]);
+            }
         }
         return [];
     }
@@ -84,9 +86,18 @@ class Markdown
     protected function responses($text) 
     {
         preg_match_all($this->regex['response'], $text, $matches);
-        if(isset($matches[3]) && isset($matches[4])) {
-            if (count($matches[3]) == count($matches[4]))
-            return array_combine($matches[3], $matches[4]);
+        if (isset($matches[3]) && isset($matches[6])) {
+            if (count($matches[3]) == count($matches[6])) {
+                $result = [];
+                foreach ($matches[3] as $i => $code) {
+                    $result[$code . $matches[5][$i]] = [
+                        'code' => $code,
+                        'lang' => $matches[5][$i],
+                        'body' => $matches[6][$i],
+                    ];
+                }
+                return $result;
+            }
         }
         return [];
     }

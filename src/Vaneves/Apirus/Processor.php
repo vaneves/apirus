@@ -278,16 +278,33 @@ class Processor
     protected function reprocessResponses($responses)
     {
         $parsedown = new Parsedown();
+        $highlighter = new Highlighter();
 
         $result = [];
         $first = true;
-        foreach ($responses as $code => $text) {
-            $markdown = "```{$code}\n{$text}\n```";
-            $body = $parsedown->text($markdown);
+        foreach ($responses as $response) {
+            $code = $response['code'];
+            $language = strtolower($response['lang']);
+            try {
+                $highlighted = $highlighter->highlight($language, $response['body']);
+
+                $body = "<pre><code class=\"hljs {$highlighted->language}\">";
+                $body .=  $highlighted->value;
+                $body .=  "</code></pre>";
+            } catch (\Exception $e) {
+                $markdown = "```{$language}\n{$response['body']}\n```";
+                $body = $parsedown->text($markdown);
+
+                if ($language) {
+                    $this->console->comment("Highlight to lang {$language} not found");
+                }
+            }
+
             array_push($result, [
                 'first' => $first,
                 'hash' => 'response-' . $code .'-'. md5(uniqid(rand(0, 99999), true)),
                 'code' => $code,
+                'lang' => $response['lang'],
                 'body' => $body,
             ]);
             $first = false;

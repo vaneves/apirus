@@ -174,6 +174,7 @@ class Processor
                 'submenu' => $submenu,
             ]);
         }
+        $this->runTosko();
         $this->buildHtml();
 
         if ($this->watch) {
@@ -317,6 +318,19 @@ class Processor
             return 'n-a';
         }
         return $text;
+    }
+
+    protected function runTosko()
+    {
+        $tosko = './tosko.php';
+
+        if (!file_exists($tosko)) {
+            $this->console->whisper("Tosko disabled");
+            return;
+        }
+        $this->console->whisper("Running tosko");
+
+        include $tosko;
     }
 
     protected function buildHtml()

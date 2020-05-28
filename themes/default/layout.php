@@ -306,9 +306,9 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th>Parâmetro</th>
-                    <th>Tipo</th>
-                    <th>Descrição</th>
+                    <th>Param</th>
+                    <th>Type</th>
+                    <th>Name</th>
                   </tr>
                 </thead>
                 <tbody>

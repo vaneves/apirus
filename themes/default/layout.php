@@ -9,6 +9,9 @@
       .navbar {
         z-index: 2;
       }
+      .nav .nav-link.active {
+        background: #ddd;
+      }
       .method {
         display: inline-block;
         padding: 5px;
@@ -217,7 +220,7 @@
           <?php foreach ($item['submenu'] as $subitem): ?>
           <!-- menu item -->
           <li class="nav-item">
-            <a class="nav-link active" href="#<?= $subitem['slug'] ?>">
+            <a class="nav-link" href="#<?= $subitem['slug'] ?>">
               <?php if ($subitem['method']): ?>
               <span class="method method-<?= strtolower($subitem['method']) ?>"><?= $subitem['method'] ?></span>
               <?php endif ?>
@@ -333,5 +336,16 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        let hash = $(location).attr('hash');
+        $('a[href="' + hash + '"].nav-link').addClass('active');
+
+        $("a.nav-link").click(function() {
+          $("a.nav-link.active").toggleClass('active');
+          $(this).addClass('active');
+        });
+      });
+    </script>
   </body>
 </html>

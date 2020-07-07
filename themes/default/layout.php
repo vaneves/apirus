@@ -339,10 +339,10 @@
     <script>
       $(document).ready(function() {
         let hash = $(location).attr('hash');
-        $('a[href="' + hash + '"].nav-link').addClass('active');
+        $('nav.sidebar a[href="' + hash + '"].nav-link').addClass('active');
 
-        $("a.nav-link").click(function() {
-          $("a.nav-link.active").toggleClass('active');
+        $("nav.sidebar a.nav-link").click(function() {
+          $("nav.sidebar a.nav-link.active").toggleClass('active');
           $(this).addClass('active');
         });
       });

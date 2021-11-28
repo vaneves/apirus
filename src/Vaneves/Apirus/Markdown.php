@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace Vaneves\Apirus;
 
-use \Parsedown;
-use \Symfony\Component\Yaml\Yaml;
+use Parsedown;
+use Symfony\Component\Yaml\Yaml;
 
 class Markdown
 {
@@ -33,35 +33,38 @@ class Markdown
         $responses = $this->responses($markdown);
 
         return new Section(
-            $meta
-            , $content
-            , $params
-            , $requests
-            , $responses
+            $meta,
+            $content,
+            $params,
+            $requests,
+            $responses
         );
     }
-    
+
     protected function variable($text)
     {
         $text = preg_replace_callback($this->regex['variable'], function ($matches) {
             if (isset($matches[2])) {
                 return env($matches[2]);
             }
+
             return $matches[1];
         }, $text);
+
         return $text;
     }
 
-    protected function meta($text) 
+    protected function meta($text)
     {
         preg_match($this->regex['meta'], $text, $matches);
         if (isset($matches[2])) {
             return Yaml::parse(trim($matches[2]));
         }
+
         return [];
     }
 
-    protected function params($text) 
+    protected function params($text)
     {
         preg_match_all($this->regex['param'], $text, $matches);
         if (isset($matches[3]) && isset($matches[4])) {
@@ -69,10 +72,11 @@ class Markdown
                 return array_combine($matches[3], $matches[4]);
             }
         }
+
         return [];
     }
 
-    protected function requests($text) 
+    protected function requests($text)
     {
         preg_match_all($this->regex['request'], $text, $matches);
         if (isset($matches[3]) && isset($matches[4])) {
@@ -80,28 +84,31 @@ class Markdown
                 return array_combine($matches[3], $matches[4]);
             }
         }
+
         return [];
     }
 
-    protected function responses($text) 
+    protected function responses($text)
     {
         preg_match_all($this->regex['response'], $text, $matches);
         if (isset($matches[3]) && isset($matches[6])) {
             if (count($matches[3]) == count($matches[6])) {
                 $result = [];
                 foreach ($matches[3] as $i => $code) {
-                    $result[$code . $matches[5][$i]] = [
+                    $result[$code.$matches[5][$i]] = [
                         'code' => $code,
                         'lang' => $matches[5][$i],
                         'body' => $matches[6][$i],
                     ];
                 }
+
                 return $result;
             }
         }
+
         return [];
     }
-    
+
     protected function removeMeta($text)
     {
         return preg_replace($this->regex['meta'], '', $text);

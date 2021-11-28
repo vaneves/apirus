@@ -1,19 +1,19 @@
-<?php 
+<?php
 
 namespace Vaneves\Apirus;
 
-use \Parsedown;
-use \Highlight\Highlighter;
-use \League\CLImate\CLImate;
+use Parsedown;
+use Highlight\Highlighter;
+use League\CLImate\CLImate;
 use Symfony\Component\Dotenv\Dotenv;
-use \Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 
 class Processor
 {
     protected $pathSrc;
 
     protected $pathDist;
-    
+
     protected $pathTheme;
 
     protected $highlightTheme;
@@ -35,9 +35,9 @@ class Processor
         $this->parser = new Markdown();
         $this->console = new CLImate();
 
-        $file_env = realpath(__DIR__ . '/../../../.env');
+        $file_env = realpath(__DIR__.'/../../../.env');
         if (!file_exists($file_env)) {
-            $this->console->error("File .env not found");
+            $this->console->error('File .env not found');
             exit;
         }
 
@@ -53,37 +53,37 @@ class Processor
     {
         $this->console->arguments->add([
             'help' => [
-                'longPrefix'  => 'help',
+                'longPrefix' => 'help',
                 'description' => 'Prints a usage statement',
-                'noValue'     => true,
+                'noValue' => true,
             ],
             'watch' => [
-                'longPrefix'  => 'watch',
+                'longPrefix' => 'watch',
                 'description' => 'Watching files changes',
-                'noValue'     => true,
+                'noValue' => true,
             ],
             'src' => [
-                'prefix'       => 's',
-                'longPrefix'   => 'src',
-                'description'  => 'Path the markdown files',
+                'prefix' => 's',
+                'longPrefix' => 'src',
+                'description' => 'Path the markdown files',
                 'defaultValue' => env('SOURCE', 'docs'),
             ],
             'dist' => [
-                'prefix'       => 'd',
-                'longPrefix'   => 'dist',
-                'description'  => 'Destination folder',
+                'prefix' => 'd',
+                'longPrefix' => 'dist',
+                'description' => 'Destination folder',
                 'defaultValue' => env('DIST', 'public'),
             ],
             'theme' => [
-                'prefix'       => 't',
-                'longPrefix'   => 'theme',
-                'description'  => 'Theme name',
+                'prefix' => 't',
+                'longPrefix' => 'theme',
+                'description' => 'Theme name',
                 'defaultValue' => env('THEME', 'themes/default'),
             ],
             'highlight' => [
-                'prefix'       => 'h',
-                'longPrefix'   => 'highlight',
-                'description'  => 'Highlight style',
+                'prefix' => 'h',
+                'longPrefix' => 'highlight',
+                'description' => 'Highlight style',
                 'defaultValue' => env('HIGHTLIGHT', 'dark'),
             ],
         ]);
@@ -109,22 +109,22 @@ class Processor
         $real_dist = realpath($dist);
         $real_theme = realpath($theme);
 
-        if ($real_src === false) {
+        if (false === $real_src) {
             $this->console->error("Directory {$src} not found");
             exit;
         }
-        if ($real_dist === false) {
+        if (false === $real_dist) {
             $this->console->error("Directory {$dist} not found");
             exit;
         }
-        if ($real_theme === false) {
+        if (false === $real_theme) {
             $this->console->error("Directory {$theme} not found");
             exit;
         }
 
-        $this->pathSrc = rtrim($real_src, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->pathDist = rtrim($real_dist, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->pathTheme = rtrim($real_theme, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'layout.php';
+        $this->pathSrc = rtrim($real_src, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $this->pathDist = rtrim($real_dist, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $this->pathTheme = rtrim($real_theme, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'layout.php';
         $this->highlightTheme = $highlight;
     }
 
@@ -179,7 +179,7 @@ class Processor
         $this->buildHtml();
 
         if ($this->watch) {
-            $this->console->whisper("Watching files for changes...");
+            $this->console->whisper('Watching files for changes...');
         }
     }
 
@@ -238,6 +238,7 @@ class Processor
                 'params' => $yaml,
             ]);
         }
+
         return $result;
     }
 
@@ -251,27 +252,28 @@ class Processor
         foreach ($requests as $lang => $text) {
             $language = strtolower($lang);
             try {
-                $l = $language == 'curl' ? 'bash' : $language;
+                $l = 'curl' == $language ? 'bash' : $language;
                 $highlighted = $highlighter->highlight($l, $text);
 
                 $body = "<pre><code class=\"hljs {$highlighted->language}\">";
-                $body .=  $highlighted->value;
-                $body .=  "</code></pre>";
+                $body .= $highlighted->value;
+                $body .= '</code></pre>';
             } catch (\Exception $e) {
                 $markdown = "```{$language}\n{$text}\n```";
                 $body = $parsedown->text($markdown);
 
                 $this->console->comment("Highlight to lang {$language} not found");
             }
-            
+
             array_push($result, [
                 'first' => $first,
-                'hash' => 'request-' . $language .'-'. md5(uniqid(rand(0, 99999), true)),
+                'hash' => 'request-'.$language.'-'.md5(uniqid(rand(0, 99999), true)),
                 'lang' => $lang,
                 'body' => $body,
             ]);
             $first = false;
         }
+
         return $result;
     }
 
@@ -289,8 +291,8 @@ class Processor
                 $highlighted = $highlighter->highlight($language, $response['body']);
 
                 $body = "<pre><code class=\"hljs {$highlighted->language}\">";
-                $body .=  $highlighted->value;
-                $body .=  "</code></pre>";
+                $body .= $highlighted->value;
+                $body .= '</code></pre>';
             } catch (\Exception $e) {
                 $markdown = "```{$language}\n{$response['body']}\n```";
                 $body = $parsedown->text($markdown);
@@ -302,17 +304,18 @@ class Processor
 
             array_push($result, [
                 'first' => $first,
-                'hash' => 'response-' . $code .'-'. md5(uniqid(rand(0, 99999), true)),
+                'hash' => 'response-'.$code.'-'.md5(uniqid(rand(0, 99999), true)),
                 'code' => $code,
                 'lang' => $response['lang'],
                 'body' => $body,
             ]);
             $first = false;
         }
+
         return $result;
     }
 
-    protected function extractName($text) 
+    protected function extractName($text)
     {
         $regex = '/^([\d]{0,3}([\s\-]+)?)?([^.]+)(\.md)?$/i';
         $matches = [];
@@ -321,10 +324,11 @@ class Processor
                 return $matches[3];
             }
         }
+
         return $text;
     }
-    
-    protected function extractSlug($text) 
+
+    protected function extractSlug($text)
     {
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
         $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
@@ -335,6 +339,7 @@ class Processor
         if (empty($text)) {
             return 'n-a';
         }
+
         return $text;
     }
 
@@ -343,10 +348,11 @@ class Processor
         $tosko = './tosko.php';
 
         if (!file_exists($tosko)) {
-            $this->console->whisper("Tosko disabled");
+            $this->console->whisper('Tosko disabled');
+
             return;
         }
-        $this->console->whisper("Running tosko");
+        $this->console->whisper('Running tosko');
 
         include $tosko;
     }
@@ -359,7 +365,7 @@ class Processor
         }
 
         $this->console->whisper("Building theme {$this->pathTheme}");
-        
+
         $menu = $this->menu;
         $items = $this->items;
 
@@ -377,14 +383,17 @@ class Processor
             $this->console->error("Directory {$this->pathDist} not found");
             exit;
         }
+        if (!is_dir($this->pathDist.env('VERSION', ''))) {
+            mkdir($this->pathDist.env('VERSION', ''), 0777, true);
+        }
 
-        $dist = $this->pathDist . 'index.html';
+        $dist = $this->pathDist.env('VERSION', '').DIRECTORY_SEPARATOR.env('NAME_OUTPUT', 'index').'.html';
 
         $this->console->whisper("Writing output {$dist}");
 
         $ok = file_put_contents($dist, $html);
         if ($ok) {
-            $this->console->info("Build successful");
+            $this->console->info('Build successful');
         } else {
             $this->console->error("Error on write file {$dist}");
         }

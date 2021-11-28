@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace Vaneves\Apirus;
 
-use \FilesystemIterator;
-use \League\CLImate\CLImate;
+use FilesystemIterator;
+use League\CLImate\CLImate;
 
 class Filesystem
 {
@@ -24,7 +24,7 @@ class Filesystem
     {
         $iterator = new FilesystemIterator($this->path);
         $structure = [];
-        foreach($iterator as $folder) {
+        foreach ($iterator as $folder) {
             if ($folder->isDir() && !preg_match($this->ignoreRegex, $folder->getFilename())) {
                 if (!$folder->isReadable()) {
                     $this->console->error("Directory {$folder->getPathname()} not is readable");
@@ -38,7 +38,7 @@ class Filesystem
 
                 $subiterator = new FilesystemIterator($folder->getPathname());
                 $files = [];
-                foreach($subiterator as $file) {
+                foreach ($subiterator as $file) {
                     if ($file->isFile()) {
                         if (!$file->isReadable()) {
                             $this->console->error("File {$file->getPathname()} not is readable");

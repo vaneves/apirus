@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Vaneves\Apirus;
 
@@ -11,11 +11,11 @@ class Section
     private $responses;
 
     public function __construct(
-        $meta
-        , $content
-        , $params
-        , $requests
-        , $responses
+        $meta,
+        $content,
+        $params,
+        $requests,
+        $responses
     ) {
         $this->meta = $meta;
         $this->content = $content;

@@ -92,6 +92,12 @@ class Processor
                 'description' => 'Name of output file',
                 'defaultValue' => env('NAME_OUTPUT', 'index'),
             ],
+            'version' => [
+                'prefix' => 'v',
+                'longPrefix' => 'version',
+                'description' => 'Version of output file',
+                'defaultValue' => env('VERSION', ''),
+            ],
         ]);
         $this->console->arguments->parse();
 
@@ -389,8 +395,11 @@ class Processor
             $this->console->error("Directory {$this->pathDist} not found");
             exit;
         }
+        if (!is_dir($this->pathDist.env('VERSION', ''))) {
+            mkdir($this->pathDist.env('VERSION', ''), 0777, true);
+        }
 
-        $dist = $this->pathDist.env('NAME_OUTPUT', 'index').'.html';
+        $dist = $this->pathDist.env('VERSION', '').DIRECTORY_SEPARATOR.env('NAME_OUTPUT', 'index').'.html';
 
         $this->console->whisper("Writing output {$dist}");
 

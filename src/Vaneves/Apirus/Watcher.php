@@ -1,9 +1,8 @@
-<?php 
+<?php
 
 namespace Vaneves\Apirus;
 
-use \FilesystemIterator;
-use \League\CLImate\CLImate;
+use League\CLImate\CLImate;
 
 class Watcher
 {
@@ -34,6 +33,7 @@ class Watcher
                 $hashs[$path] = $hash;
             }
         }
+
         return $hashs;
     }
 
@@ -80,14 +80,14 @@ class Watcher
     public function onChange($callback)
     {
         if (!is_callable($callback)) {
-            $this->console->error("Param is not callable");
+            $this->console->error('Param is not callable');
             exit;
         }
         $this->callback = $callback;
 
         $this->hashs = $this->getFiles();
 
-        while(true) {
+        while (true) {
             $this->checkDoc();
             sleep(2);
         }

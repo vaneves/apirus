@@ -105,11 +105,9 @@ class Processor
         $theme = $this->console->arguments->get('theme');
         $highlight = $this->console->arguments->get('highlight');
 
-
         $real_src = realpath($src);
         $real_dist = realpath($dist);
         $real_theme = realpath($theme);
-
 
         if (false === $real_src) {
             $this->console->error("Directory {$src} not found");

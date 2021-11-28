@@ -37,6 +37,8 @@ SOURCE=
 DIST=
 THEME=
 HIGHTLIGHT=
+NAME_OUTPUT=
+VERSION=
 ```
 
 | Variable   | Description             | Default          |

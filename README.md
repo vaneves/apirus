@@ -41,13 +41,15 @@ NAME_OUTPUT=
 VERSION=
 ```
 
-| Variable   | Description             | Default          |
-|------------|-------------------------|------------------|
-| API_URL    | Base URL of requests    |                  |
-| SOURCE     | Path the markdown files | ./docs           |
-| DIST       | Destination folder      | ./public         |
-| THEME      | Theme name              | ./themes/default |
-| HIGHTLIGHT | Highlight style         | dark             |
+| Variable    | Description             | Default          |
+|-------------|-------------------------|------------------|
+| API_URL     | Base URL of requests    |                  |
+| SOURCE      | Path the markdown files | ./docs           |
+| DIST        | Destination folder      | ./public         |
+| THEME       | Theme name              | ./themes/default |
+| HIGHTLIGHT  | Highlight style         | dark             |
+| NAME_OUTPUT | Name output file        | index.html       |
+| VERSION     | Version doc output      |                  |
 
 The `API_URL` variable is used to not repeat the complete URL of the request in all markdown files. You can use it `{{API_URL}}`, for example:
 

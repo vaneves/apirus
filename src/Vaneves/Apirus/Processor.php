@@ -390,7 +390,7 @@ class Processor
             exit;
         }
 
-        $dist = $this->pathDist.env('NAME_OUTPUT').'.html';
+        $dist = $this->pathDist.env('NAME_OUTPUT', 'index').'.html';
 
         $this->console->whisper("Writing output {$dist}");
 

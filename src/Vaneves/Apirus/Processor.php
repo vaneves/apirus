@@ -86,18 +86,6 @@ class Processor
                 'description' => 'Highlight style',
                 'defaultValue' => env('HIGHTLIGHT', 'dark'),
             ],
-            'name_otput' => [
-                'prefix' => 'n',
-                'longPrefix' => 'name_otput',
-                'description' => 'Name of output file',
-                'defaultValue' => env('NAME_OUTPUT', 'index'),
-            ],
-            'version' => [
-                'prefix' => 'v',
-                'longPrefix' => 'version',
-                'description' => 'Version of output file',
-                'defaultValue' => env('VERSION', ''),
-            ],
         ]);
         $this->console->arguments->parse();
 
@@ -117,9 +105,11 @@ class Processor
         $theme = $this->console->arguments->get('theme');
         $highlight = $this->console->arguments->get('highlight');
 
+
         $real_src = realpath($src);
         $real_dist = realpath($dist);
         $real_theme = realpath($theme);
+
 
         if (false === $real_src) {
             $this->console->error("Directory {$src} not found");
